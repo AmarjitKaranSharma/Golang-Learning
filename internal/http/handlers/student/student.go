@@ -22,16 +22,20 @@ func New() http.HandlerFunc {
 
 		err := json.NewDecoder(r.Body).Decode(&student)
 		fmt.Println(err)
-		if errors.Is(err, io.EOF) {
-			response.WriteJson(w, http.StatusBadRequest, err.Error())
-			return
-		}
 
-		if err != nil {
+		// Specific error handling for empty body
+		if errors.Is(err, io.EOF) {
 			response.WriteJson(w, http.StatusBadRequest, response.GeneralError(fmt.Errorf("empty body"), http.StatusBadRequest))
 			return
 		}
 
+		// Common error handling
+		if err != nil {
+			response.WriteJson(w, http.StatusBadRequest, response.GeneralError(err, http.StatusBadRequest))
+			return
+		}
+
+		// Validation error handling
 		if err := validator.New().Struct(student); err != nil {
 			validateErrs := err.(validator.ValidationErrors)
 			response.WriteJson(w, http.StatusBadRequest, response.ValidationError(validateErrs))

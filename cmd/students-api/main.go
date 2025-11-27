@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"log/slog"
 	"net/http"
 	"os"
@@ -12,6 +13,7 @@ import (
 
 	"github.com/AmarjitKaranSharma/golang-student-api/internal/config"
 	"github.com/AmarjitKaranSharma/golang-student-api/internal/http/handlers/student"
+	"github.com/AmarjitKaranSharma/golang-student-api/internal/storage/sqlite"
 )
 
 func main() {
@@ -19,6 +21,14 @@ func main() {
 
 	// Load configuration
 	cfg := config.MustLoad()
+
+	// database connection setup
+	_, err := sqlite.New(cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	slog.Info("Storage Initialized", slog.String("env", cfg.Env))
 
 	// setup router
 	router := http.NewServeMux()
@@ -53,7 +63,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	err := server.Shutdown(ctx)
+	err = server.Shutdown(ctx)
 	if err != nil {
 		slog.Error("Failed to shutdown server", slog.String("error", err.Error()))
 	}
