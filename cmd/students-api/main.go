@@ -11,6 +11,8 @@ import (
 	"syscall"
 	"time"
 
+	_ "github.com/mattn/go-sqlite3"
+
 	"github.com/AmarjitKaranSharma/golang-student-api/internal/config"
 	"github.com/AmarjitKaranSharma/golang-student-api/internal/http/handlers/student"
 	"github.com/AmarjitKaranSharma/golang-student-api/internal/storage/sqlite"
