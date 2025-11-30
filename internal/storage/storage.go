@@ -1,5 +1,8 @@
 package storage
 
+import "github.com/AmarjitKaranSharma/golang-student-api/internal/types"
+
 type Storage interface {
-	createStudent(name string, email string, age int) (int64, error)
+	CreateStudent(name string, email string, age int) (int64, error)
+	GetStudentById(id int64) (types.Student, error)
 }
